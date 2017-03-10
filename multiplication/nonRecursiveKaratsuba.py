@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 def karat(x,y):
+    if x < 10 or y < 10:
+        return x*y
+
     a = int(str(x)[:(len(str(x))/2)])
     b = int(str(x)[(len(str(x))/2):])
     c = int(str(y)[:(len(str(y))/2)])
@@ -15,8 +18,3 @@ def karat(x,y):
 
     return answer
 
-a = 3141592653589793238462643383279502884197169399375105820974944592
-b = 2718281828459045235360287471352662497757247093699959574966967627
-foo = karat(a,b)
-
-print(foo)
