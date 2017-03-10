@@ -27,4 +27,3 @@ def mergeSort(arr):
 
         return c
 
-print(mergeSort([5,3,4,1,2]))

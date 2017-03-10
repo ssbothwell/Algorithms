@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 import random
-import time
+#import time
+#
+#def timeit(method):
+#
+#    def timed(*args, **kw):
+#        ts = time.time()
+#        result = method(*args, **kw)
+#        te = time.time()
+#
+#        print '%r (%r, %r) %2.2f sec' % \
+#              (method.__name__, args, kw, te-ts)
+#        return result
 
-def timeit(method):
-
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-
-        print '%r (%r, %r) %2.2f sec' % \
-              (method.__name__, args, kw, te-ts)
-        return result
-
-    return timed
+#    return timed
 
 def partition(array,start,end):
     """ median of three """
     """ not my code """
-    global comparisons
-    comparisons += (end-start)-1
     median = (end -1 - start) / 2
     median = median + start
     left = start + 1
@@ -55,17 +53,11 @@ def quickSort(arr, l=0, r=None):
     quickSort(arr, p+1, r)
 
 
-comparisons = 0
-@timeit
-def outer():
-    global comparisons
-    file = open('quickSortData.txt', 'r')
-    data = [ int(line.rstrip()) for line in file ] 
-    #data = [8,3,4,6,2,5,7,1]
+#file = open('quickSortData.txt', 'r')
+#data = [ int(line.rstrip()) for line in file ] 
+#data = [8,3,4,6,2,5,7,1]
+#@timeit
+def quickSortOuter(data):
     quickSort(data)
-    print data
-    print comparisons
-
-outer()
-
+    return data
 

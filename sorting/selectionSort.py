@@ -16,5 +16,3 @@ def selSort(arr):
         arr[i], arr[maxIndex]  = arr[maxIndex], temp
     return arr
 
-print selSort([4,5,1,3,2,7,9,11,0,13])
-
