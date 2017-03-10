@@ -1,9 +1,9 @@
 #!/usr/bin/python
-
+from matrixAddition import addMatrix
 def multiMatrix(x,y):
     n = len(x)
     if n == 1:
-        return x[0][0] * y[0][0]
+        return [[x[0][0] * y[0][0]]]
     else:
         a = [[col for col in row[:len(row)/2]] for row in x[:len(x)/2]]
         b = [[col for col in row[len(row)/2:]] for row in x[:len(x)/2]]
@@ -22,11 +22,14 @@ def multiMatrix(x,y):
         cf = multiMatrix(c,f)
         dh = multiMatrix(d,h)
 
-        c = [[ae+bg,af+bh],[ce+dg,cf+dh]]
-
+        c = join_vert(join_horiz(addMatrix(ae,bg),addMatrix(af,bh)),join_horiz(addMatrix(ce,dg),addMatrix(cf,dh)))
         return c
 
+def join_horiz(a, b):
+    return [rowa + rowb for rowa, rowb in zip(a,b)]
 
+def join_vert(a, b):
+    return a+b
 a = [
     [1,2,3,4],
     [5,6,7,8],
@@ -40,4 +43,20 @@ b = [
     [13,14,15,16]
     ]
 
+answer = [
+    [90,100,110,120],
+    [202,228,254,280],
+    [314,356,398,440],
+    [426,484,542,600]
+    ]
+
+#return =
+#    [
+#        [[90, 100], [202, 228]],
+#        [[110, 120], [254, 280]]
+#    ],
+#    [
+#        [[314, 356], [426, 484]],
+#        [[398, 440], [542, 600]]
+#    ]
 print multiMatrix(a,b)

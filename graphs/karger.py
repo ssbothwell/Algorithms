@@ -25,8 +25,8 @@ def checkMin(g):
         cleanGraph(g)
     return len(g[g.keys()[0]])
 
-file = open('karger2.txt', 'r')
-raw_data = [ [ int(el) for el in line.strip().split(" ") ] for line in file ] 
+file = open('karger.txt', 'r')
+raw_data = [ [ int(el) for el in line.strip().split("\t") ] for line in file ]
 
 def outer():
     graph = { line[0]: [line[i] for i in range(1,len(line))] for line in raw_data }
