@@ -14,7 +14,7 @@ def bfSearch(gDict, startingNode):
                 exploredDict[m] = True
                 queue.extend(m)
 
-    return exploredDict, distDict
+    return distDict
 
 graphDict = {
     's': ['a','b'],
