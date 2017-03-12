@@ -17,7 +17,7 @@ def bfSearch(gDict, startingNode, exploredDict=None):
                 distDict[m] = distDict[n] + 1
                 exploredDict[m] = True
                 queue.extend(m)
-    return distDict
+    return [ key for key in distDict ]
 
 def connectedComponents(gDict):
     exploredDict = { key: False for key in gDict }
