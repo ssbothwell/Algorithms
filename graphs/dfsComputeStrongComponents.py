@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Kosaraju's Two Pass Algorithm
 
+
 def createEdgeList(filename):
     """ Generate edge list from text file """
     file = open(filename, 'r')
@@ -79,18 +80,8 @@ def dfsloop(gDict):
     return strongComponents
 
 
-graph = {
-    1: [7],
-    2: [5],
-    3: [9],
-    4: [1],
-    5: [8],
-    6: [3,8],
-    7: [4,9],
-    8: [2],
-    9: [6]
-}
-# Load data and process into a graph dict
-#edgeList = createEdgeList('test_data_d.txt')
-#print calculateStrongComponents(createGraphDict(edgeList))
+
+if __name__ == '__main__':
+    edgeList = createEdgeList('test_data_d.txt')
+    print calculateStrongComponents(createGraphDict(edgeList))
 
