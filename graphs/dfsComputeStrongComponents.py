@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 # Kosaraju's Two Pass Algorithm
 
+def createEdgeList(filename):
+    """ Generate edge list from text file """
+    file = open(filename, 'r')
+    return  map(lambda x: [int(x[0]), int(x[1])], map(lambda x: x.rstrip().split(' '), file))
+
+
+def createGraphDict(edgeList):
+    """ Generate linked list graph from edge list """
+    graphDict = { el: [] for el in range(1, 1+max(map(lambda x: max(x), edgeList)))}
+    map(lambda el: graphDict[el[0]].append(el[1]), edgeList)
+
+    return graphDict
+
+
 def reverseGraph(graph):
     """ Reverse the key/value pairs in linked list graph """
     rGraph = { el: [] for el in range(1, 1+max(max(graph.keys()),max(graph.values()[0])))}
@@ -11,6 +25,11 @@ def reverseGraph(graph):
             else:
                 rGraph[val] = [key]
     return rGraph
+
+
+def calculateStrongComponents(graph):
+    """ returns a sorted list of strong component sizes """
+    return sorted(map(lambda x: len(x), dfsloop(graph)), reverse=True)
 
 
 def visit(gDict, startingNode, exploredDict, t):
@@ -71,18 +90,7 @@ graph = {
     8: [2],
     9: [6]
 }
-
 # Load data and process into a graph dict
-file = open('scc2.txt', 'r')
-data = map(lambda x: [int(x[0]), int(x[1])], map(lambda x: x.rstrip().split(' '), file))
-
-file = open('scc2.txt', 'r')
-rData = map(lambda x: [int(x[1]), int(x[0])], map(lambda x: x.rstrip().split(' '), file))
-
-#graphDict = { el[0]: [] for el in data}
-graphDict = { el: [] for el in range(1, 1+max(map(lambda x: max(x), data)))}
-#rGraphDict = { el: [] for el in range(1, 1+max(map(lambda x: max(x), rData)))}
-map(lambda el: graphDict[el[0]].append(el[1]), data)
-#map(lambda el: rGraphDict[el[0]].append(el[1]), rData)
-print sorted(map(lambda x: len(x), dfsloop(graphDict)), reverse=True)
+#edgeList = createEdgeList('test_data_d.txt')
+#print calculateStrongComponents(createGraphDict(edgeList))
 
