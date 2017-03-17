@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Kosaraju's Two Pass Algorithm
+# Iterative Version
 
 
 def createEdgeList(filename):
@@ -35,22 +36,40 @@ def calculateStrongComponents(graph):
 
 def visit(gDict, startingNode, exploredDict, t):
     """ Visit each node using DFS generate finishing time list """
-
-    exploredDict[startingNode] = True
-    for n in gDict[startingNode]:
+    stack = [startingNode]
+    while len(stack) != 0:
+        n = stack.pop()
         if exploredDict[n] == False:
-            visit(gDict, n, exploredDict, t)
-    t.append(startingNode)
+            stack = stack +[n]
+            exploredDict[n] = True
+            for m in gDict[n]:
+                if exploredDict[m] == False:
+                    stack.append(m)
+        else:
+            if exploredDict[n] == True:
+                t.append(n)
 
 
-def assign(gdict, startingnode, exploredDict, leader, sComponent):
-    """ Second pass DFS group nodes with leaders """
-
-    exploredDict[startingnode] = True
-    for n in gdict[startingnode]:
+def assign(gDict, startingNode, exploredDict, leader, sComponent):
+    stack = [startingNode]
+    while len(stack) != 0:
+        n = stack.pop()
         if exploredDict[n] == False:
             sComponent.append(n)
-            assign(gdict, n, exploredDict, leader, sComponent)
+            exploredDict[n] = True
+            for m in gDict[n]:
+                if exploredDict[m] == False:
+                    stack.append(m)
+
+
+#def assign(gdict, startingnode, exploredDict, leader, sComponent):
+#    """ Second pass DFS group nodes with leaders """
+#
+#    exploredDict[startingnode] = True
+#    for n in gdict[startingnode]:
+#        if exploredDict[n] == False:
+#            sComponent.append(n)
+#            assign(gdict, n, exploredDict, leader, sComponent)
 
 
 def dfsloop(gDict):
@@ -69,7 +88,6 @@ def dfsloop(gDict):
     # Second Pass
     rGraph = reverseGraph(gDict)
     exploredDict = { key: False for key in rGraph.keys() }
-    #t = filter(lambda x: x != 5, t)
     # Uses finishing times as order
     for i in reversed(t):
         s = i
@@ -83,5 +101,5 @@ def dfsloop(gDict):
 
 if __name__ == '__main__':
     edgeList = createEdgeList('test_data_a.txt')
+    #print dfsloop(createGraphDict(edgeList))
     print calculateStrongComponents(createGraphDict(edgeList))
-

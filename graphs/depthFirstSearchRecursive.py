@@ -4,7 +4,6 @@ def dfSearch(gDict, startingNode, exploredDict=None):
     if exploredDict == None:
         exploredDict = { key: False for key in gDict.keys() }
     exploredDict[startingNode] = True
-    print startingNode
     for n in gDict[startingNode]:
         if exploredDict[n] == False:
             dfSearch(gDict, n, exploredDict)
