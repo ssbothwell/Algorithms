@@ -92,7 +92,7 @@ def dfsloop(gDict):
     for i in reversed(t):
         s = i
         if exploredDict[i] == False:
-            sComponent = [s]
+            sComponent = []
             assign(rGraph, i, exploredDict, s, sComponent)
             strongComponents.append(sComponent)
     return strongComponents
@@ -101,5 +101,4 @@ def dfsloop(gDict):
 
 if __name__ == '__main__':
     edgeList = createEdgeList('test_data_a.txt')
-    #print dfsloop(createGraphDict(edgeList))
     print calculateStrongComponents(createGraphDict(edgeList))
