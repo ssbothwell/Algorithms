@@ -1,7 +1,21 @@
 #!/usr/bin/env python
 # Kosaraju's Two Pass Algorithm
 # Iterative Version
+import random
+import time
 
+def timeit(method):
+
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print '%r %2.2f sec' % \
+              (method.__name__, te-ts)
+        return result
+
+    return timed
 
 def createEdgeList(filename):
     """ Generate edge list from text file """
@@ -33,43 +47,33 @@ def calculateStrongComponents(graph):
     """ returns a sorted list of strong component sizes """
     return sorted(map(lambda x: len(x), dfsloop(graph)), reverse=True)
 
-
-def visit(gDict, startingNode, exploredDict, t):
+def visit(gDict, startingNode, explored, t):
     """ Visit each node using DFS generate finishing time list """
+    orderedNodes = set()
     stack = [startingNode]
     while len(stack) != 0:
         n = stack.pop()
-        if exploredDict[n] == False:
-            stack = stack +[n]
-            exploredDict[n] = True
+        if n not in explored:
+            stack.append(n)
+            explored.add(n)
             for m in gDict[n]:
-                if exploredDict[m] == False:
+                if m not in explored:
                     stack.append(m)
         else:
-            if exploredDict[n] == True:
+            if n not in orderedNodes:
                 t.append(n)
+                orderedNodes.add(n)
 
-
-def assign(gDict, startingNode, exploredDict, leader, sComponent):
+def assign(gDict, startingNode, explored, leader, sComponent):
     stack = [startingNode]
     while len(stack) != 0:
         n = stack.pop()
-        if exploredDict[n] == False:
+        if n not in explored:
             sComponent.append(n)
-            exploredDict[n] = True
+            explored.add(n)
             for m in gDict[n]:
-                if exploredDict[m] == False:
+                if m not in explored:
                     stack.append(m)
-
-
-#def assign(gdict, startingnode, exploredDict, leader, sComponent):
-#    """ Second pass DFS group nodes with leaders """
-#
-#    exploredDict[startingnode] = True
-#    for n in gdict[startingnode]:
-#        if exploredDict[n] == False:
-#            sComponent.append(n)
-#            assign(gdict, n, exploredDict, leader, sComponent)
 
 
 def dfsloop(gDict):
@@ -78,27 +82,26 @@ def dfsloop(gDict):
     # Current `leader` Vertex
     s = -1
     strongComponents = []
-    exploredDict = { key: False for key in gDict.keys() }
+    explored = set()
     # First Pass
-    for i in reversed(gDict.keys()):
-        if exploredDict[i] == False:
+    for i in reversed(sorted(gDict.keys())):
+        if i not in explored:
             s = i
-            visit(gDict, i, exploredDict, t)
+            visit(gDict, i, explored, t)
 
     # Second Pass
     rGraph = reverseGraph(gDict)
-    exploredDict = { key: False for key in rGraph.keys() }
+    explored = set()
     # Uses finishing times as order
     for i in reversed(t):
         s = i
-        if exploredDict[i] == False:
+        if i not in explored:
             sComponent = []
-            assign(rGraph, i, exploredDict, s, sComponent)
+            assign(rGraph, i, explored, s, sComponent)
             strongComponents.append(sComponent)
     return strongComponents
 
 
-
 if __name__ == '__main__':
-    edgeList = createEdgeList('test_data_a.txt')
-    print calculateStrongComponents(createGraphDict(edgeList))
+    edgeList = createEdgeList('scc3.txt')
+    print calculateStrongComponents(createGraphDict(edgeList))[:5]
