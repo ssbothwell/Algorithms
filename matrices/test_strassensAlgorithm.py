@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import unittest
 from strassensAlgorithm import *
+from matrixAddition import addMatrix
+from matrixSubtraction import subtractMatrix
 
 class strassen(unittest.TestCase):
     def setUp(self):
@@ -24,7 +26,7 @@ class strassen(unittest.TestCase):
                     ]
 
     def test_a(self):
-        self.assertEqual(strassen(a,b), answer)
+        self.assertEqual(strassen(self.a,self.b), self.answer)
 
 
 if __name__ == '__main__':
