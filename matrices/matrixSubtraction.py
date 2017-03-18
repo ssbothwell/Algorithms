@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-def addMatrix(x, y):
+def subtractMatrix(x, y):
     """
     Params: two matrices as nested lists
     Returns: their difference if they are the same size
@@ -12,7 +12,6 @@ def addMatrix(x, y):
         return x+y
     if len(x) != len(y):
         return -1
-
     for row in range(0,len(x)):
         if len(x[row]) != len(y[row]):
             return -1
@@ -20,7 +19,7 @@ def addMatrix(x, y):
     for row in range(0,len(x)):
         z.append([])
         for col in range(0, len(x[row])):
-            z[row].append(x[row][col]+y[row][col])
+            z[row].append(x[row][col]-y[row][col])
 
     return z
 
@@ -28,4 +27,4 @@ def addMatrix(x, y):
 #a = [[0,1,2],[9,8,7]]
 #b = [[6,5,4],[3,4,5]]
 #
-#print addMatrix(a,b)
+#print subtractMatrix(a,b)
