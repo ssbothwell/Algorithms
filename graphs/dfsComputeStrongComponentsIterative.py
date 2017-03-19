@@ -101,7 +101,10 @@ def dfsloop(gDict):
             strongComponents.append(sComponent)
     return strongComponents
 
+@timeit
+def time_wrapper():
+    print calculateStrongComponents(createGraphDict(edgeList))[:5]
 
 if __name__ == '__main__':
-    edgeList = createEdgeList('scc3.txt')
-    print calculateStrongComponents(createGraphDict(edgeList))[:5]
+    edgeList = createEdgeList('scc.txt')
+    time_wrapper()

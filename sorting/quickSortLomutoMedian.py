@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import random
-#import time
+import time
 #
 #def timeit(method):
 #

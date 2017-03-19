@@ -17,7 +17,7 @@ def mergeSortInversions(arr):
         inversions = 0 + ai + bi
 
         while i < len(a) and j < len(b):
-            if a[i] < b[j]:
+            if a[i] <= b[j]:
                 c.append(a[i])
                 i += 1
             else:
@@ -34,4 +34,6 @@ def mergeSortInversions(arr):
 
 #file = open(sys.argv[1], 'r')
 #list = [int(x.rstrip()) for x in file]
-print(mergeSortInversions([2,3,1,4,3,1,4,2]))
+print mergeSortInversions([1,3,5,2,4,6])
+
+

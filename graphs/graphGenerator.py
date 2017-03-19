@@ -20,4 +20,4 @@ def generateEdges(nodes, edgeCount):
 
 
 if __name__ == '__main__':
-    generateEdges(generateNodes(100), 10000)
+    generateEdges(generateNodes(10), 10000)
