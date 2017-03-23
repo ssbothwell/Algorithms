@@ -22,6 +22,7 @@ and as source and repeat from step 3.
 """
 
 def search(graph, source, nodeDistances):
+    nodeDistances[source] = 0
     queue = deque([source])
     while len(queue) != 0:
         n = queue.popleft()
@@ -36,6 +37,22 @@ def search(graph, source, nodeDistances):
     return nodeDistances
 
 
+def createGraph(filename):
+    """ Generate edge list from text file """
+    file = open(filename, 'r')
+    # Map each line of test data to a line in the data list:
+    data = map(lambda x: x.rstrip().split('\t'), file)
+    # Map data to a dict with index 0 of each line as key and
+    # the remaining elemts as a list of tuples
+    data = { int(x[0]): [(int(y.split(',')[0]), int(y.split(',')[1])) for y in x[1:]] for x in data}
+    return data
+
+def createDistanceDict(graph):
+    """ instantiate nodeDistances dict """
+    nodeDistances = { x: float("infinity") for x in graph.keys() }
+    return nodeDistances
+
+
 nodeDistances = {
     1: 0,
     2: float("infinity"),
@@ -47,14 +64,17 @@ nodeDistances = {
     8: float("infinity"),
     }
 graph = {
-    1: [[2,1],[8,2]],
-    2: [[1,1],[3,1]],
-    3: [[2,1],[4,1]],
-    4: [[3,1],[5,1]],
-    5: [[4,1],[6,1]],
-    6: [[5,1],[7,1]],
-    7: [[6,1],[8,1]],
-    8: [[7,1],[1,2]],
+    1: [(2,1),(8,2)],
+    2: [(1,1),(3,1)],
+    3: [(2,1),(4,1)],
+    4: [(3,1),(5,1)],
+    5: [(4,1),(6,1)],
+    6: [(5,1),(7,1)],
+    7: [(6,1),(8,1)],
+    8: [(7,1),(1,2)],
 }
+
 if __name__ == '__main__':
-    print search(graph, 1, nodeDistances)
+    graph = createGraph('djikstra_test.txt')
+    nodeDistances = createDistanceDict(graph)
+    print search(graph, 1, nodeDistances)[197]
