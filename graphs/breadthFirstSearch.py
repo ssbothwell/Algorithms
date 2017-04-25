@@ -25,4 +25,4 @@ graphDict = {
     'o': ['c','d']
 }
 
-print bfSearch(graphDict, 's')
+print(bfSearch(graphDict, 's'))
