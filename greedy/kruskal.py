@@ -36,12 +36,19 @@ Let T* = output of Kruskal's algorithm on input graph G
 """
 
 def kruskal(edgeList):
-    T = disjoint_set()
     sortedEdges = sort_edges(edgeList)
-    T.make_set(sortedEdges[0])
+    T = set()
+    D = disjoint_set()
     for edge in sortedEdges:
-        
-    return T.forest
+        D.make_set(edge[0])
+        D.make_set(edge[1])
+    for edge in sortedEdges:
+        x = D.find(edge[0])
+        y = D.find(edge[1])
+        if x != y:
+            T.add(edge)
+            D.union(x,y)
+    return T
 
 def sort_edges(edgeList):
     """
