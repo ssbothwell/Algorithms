@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from collections import deque
-from itertools import chain, compress
 from operator import itemgetter
 
 """
@@ -13,6 +11,9 @@ for each edge:
     if T + edge has no cycles:
         T.append(edge)
 return T
+
+In this optimized version, the disjoint-set data structure is used
+to make cycle checks. Worse case running time is O(mlog(n)).
 
 Proof:
 Let T* = output of Kruskal's algorithm on input graph G
