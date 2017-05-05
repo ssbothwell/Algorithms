@@ -36,14 +36,24 @@ def reconstruct(A, items):
         i -= 1
     return result
 
+def load_items(filename):
+    """ Generate graph path from text file """
+    file = open(filename, 'r')
+    # Map each line of test data to a line in the data list:
+    data = [ [int(y) for y in x.rstrip().split(' ')] for x in file]
+    return data
+
+
 if __name__ == '__main__':
     items = [(3,4)
             ,(2,3)
             ,(4,2)
             ,(4,3)
             ]
-    result = knapsack(items, 6)
+    items = load_items('data_knapsack1.txt')
+    result = knapsack(items, len(items))
     for i in range(len(result)-1, -1, -1):
         print(i,result[i])
-    print('   '+'  '.join([str(x) for x in range(1,len(items)+1)]))
-    print("Items Chosen: %s" % reconstruct(result, items))
+    #print('   '+'  '.join([str(x) for x in range(1,len(items)+1)]))
+    print("Optimal Value: %s" % result[-1][-1])
+    #print("Items Chosen: %s" % reconstruct(result, items))

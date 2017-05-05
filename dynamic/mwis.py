@@ -88,7 +88,7 @@ def load_path(filename):
     """ Generate graph path from text file """
     file = open(filename, 'r')
     # Map each line of test data to a line in the data list:
-    data = [ int(x.strip()) for x in file]
+    data = [ (int(x[0]), int(x[1])) for x.strip().split(' ') in file]
     return data
 
 
