@@ -50,6 +50,14 @@ def huffman(codeDict):
         heapq.heappush(Q, (n1[0]+n2[0], inner_node))
     return heapq.heappop(Q)
 
+def walk_tree(node, codeList, prefix="", code={}):
+    if node.has_children() == False:
+        codeList.append((prefix, node.symbol))
+    if isinstance(node.left_child, huffman_node):
+        walk_tree(node.left_child, codeList, prefix+"0", code)
+    if isinstance(node.right_child, huffman_node):
+        walk_tree(node.right_child, codeList, prefix+"1", code)
+
 def load_symbols(filename):
     """ Generate symbol list from text file """
     file = open(filename, 'r')
@@ -59,22 +67,22 @@ def load_symbols(filename):
 
 
 if __name__ == '__main__':
-    codes = [(0.32,'A')
-            ,(0.25,'B')
+    codes = [(0.28,'A')
+            ,(0.27,'B')
             ,(0.2,'C')
-            ,(0.18,'D')
-            ,(0.05,'E')
+            ,(0.15,'D')
+            ,(0.1,'E')
             ]
-    codes = load_symbols("data_huffman.txt")
+    #codes = [(0.32,'A')
+    #        ,(0.25,'B')
+    #        ,(0.2,'C')
+    #        ,(0.18,'D')
+    #        ,(0.05,'E')
+    #        ]
+    #codes = load_symbols("data_huffman.txt")
     root = huffman(codes)[1]
     codeList = []
-    def walk_tree(node, codeList, prefix="", code={}):
-        if node.has_children() == False:
-            codeList.append((prefix, node.symbol))
-        if isinstance(node.left_child, huffman_node):
-            walk_tree(node.left_child, codeList, prefix+"0", code)
-        if isinstance(node.right_child, huffman_node):
-            walk_tree(node.right_child, codeList, prefix+"1", code)
 
     walk_tree(root, codeList)
-    print(min([ len(x[0]) for x in codeList]))
+    print(codeList)
+    print(max([ len(x[0]) for x in codeList]))

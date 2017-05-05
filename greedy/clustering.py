@@ -32,9 +32,9 @@ def k_cluster(edgeLast, K):
         y = D.find(edge[1])
         if x != y:
             if D.partitions_count == K:
-                return D.forest, edge[2]
+                return D.parent, D.partitions_count
             D.union(x,y)
-    return D.forest, Max_Distance
+    return D.partitions_count
 
 def sort_edges(edgeList):
     """
@@ -51,59 +51,41 @@ def create_edges(filename):
     data = [ [int(y) for y in x.rstrip().split(' ')] for x in file]
     return data
 
-class partition(object):
-    def __init__(self, element=None):
-        self.size = 0
-        if element == None:
-            self.contents = set()
-            self.representative = None
-        else:
-            self.contents = {element}
-            self.representative = element
-            self.size = 1
-
-    def find(self, element):
-        return element in self.contents
-
-    def add(self, partition):
-        self.contents = self.contents.union(partition)
-        self.size = len(self.contents)
-
-    def show(self):
-        return self.contents
-
-    def __repr__(self):
-        return str(self.contents)
-
 class disjoint_set(object):
     def __init__(self):
         self.partitions_count = 0
-        self.forest = {}
+        self.size = {}
+        self.parent = {}
 
     def make_set(self, element):
         if self.find(element) == False:
-            new_partition = partition(element)
-            self.forest[new_partition.representative] = new_partition
+            self.parent[element] = element
+            self.size[element] = 1
             self.partitions_count += 1
 
     def union(self, x, y):
-        if x != y:
-            if self.forest[x].size < self.forest[y].size:
-                self.forest[y].add(self.forest[x].show())
-                self.delete(x)
+        xParent = self.find(x)
+        yParent = self.find(y)
+        if xParent != yParent:
+            if self.size[xParent] < self.size[yParent]:
+                self.parent[xParent] = yParent
+                self.size[yParent] += self.size[xParent]
+                self.partitions_count -= 1
             else:
-                self.forest[x].add(self.forest[y].show())
-                self.delete(y)
+                self.parent[yParent] = xParent
+                self.size[xParent] += self.size[yParent]
+                self.partitions_count -= 1
 
     def find(self, element):
-        for partition in self.forest.keys():
-            if self.forest[partition].find(element):
-                return self.forest[partition].representative
+        if element in self.parent:
+            if element == self.parent[element]:
+                return element
+            root = self.parent[element]
+            while self.parent[root] != root:
+                root = self.find(self.parent[root])
+            self.parent[element] = root
+            return root
         return False
-
-    def delete(self, partition):
-        del self.forest[partition]
-        self.partitions_count -= 1
 
 
 if __name__ == '__main__':
