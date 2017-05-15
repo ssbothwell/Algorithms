@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+import sys
+sys.setrecursionlimit(3000)
 """
 The 0/1 Knapsack Problem
 
@@ -16,7 +17,11 @@ an item is removed from it and S.
 """
 
 def knapsack(items, sack):
-    A = [[ 0 for x in range(0, len(items))] for y in range(sack+1)]
+    """
+    items = [(v,w),(v,w)]
+    sack = int
+    """
+    A = [[0] * len(items) for x in range(sack+1)]
     for i in range(0, len(items)):
         for j in range(0, sack+1):
             if items[i][1] > j:
@@ -24,6 +29,24 @@ def knapsack(items, sack):
             else:
                 A[j][i] = max(A[j][i-1], A[j-items[i][1]][i-1] + items[i][0])
     return A
+
+def recursive_knapsack(items, size):
+    cache = {}
+    def inner(items, size, totalItems, currentItem, cache):
+        if currentItem >= totalItems or size <= 0:
+            return 0
+        key = (totalItems - currentItem -1, size)
+        if key in cache:
+            return cache[key]
+        elif items[currentItem][1] > size:
+            maxValue = inner(items, size, totalItems, currentItem+1, cache)
+        else:
+            maxValue = max(items[currentItem][0] + inner(items, size-items[currentItem][1], totalItems, currentItem+1, cache),
+            inner(items, size, totalItems, currentItem+1, cache))
+
+        cache[key] = maxValue
+        return maxValue
+    return inner(items, size, len(items), 0, cache)
 
 def reconstruct(A, items):
     result = []
@@ -43,6 +66,13 @@ def load_items(filename):
     data = [ [int(y) for y in x.rstrip().split(' ')] for x in file]
     return data
 
+def print_result(result, reconstruct=False):
+    for i in range(len(result)-1, -1, -1):
+        print(i,result[i])
+    print('   '+'  '.join([str(x) for x in range(1,len(items)+1)]))
+    print("Optimal Value: %s" % result[-1][-1])
+    if reconstruct == True:
+        print("Items Chosen: %s" % reconstruct(result, items))
 
 if __name__ == '__main__':
     items = [(3,4)
@@ -50,10 +80,9 @@ if __name__ == '__main__':
             ,(4,2)
             ,(4,3)
             ]
-    items = load_items('data_knapsack1.txt')
-    result = knapsack(items, len(items))
-    for i in range(len(result)-1, -1, -1):
-        print(i,result[i])
-    #print('   '+'  '.join([str(x) for x in range(1,len(items)+1)]))
-    print("Optimal Value: %s" % result[-1][-1])
-    #print("Items Chosen: %s" % reconstruct(result, items))
+    #items = load_items('data_knapsack2.txt')
+    result = knapsack(items, 6)
+    print(result)
+    #print(recursive_knapsack(items, 6))
+    #print("Optimal Value: %s" % result[-1][-1])
+

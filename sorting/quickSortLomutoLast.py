@@ -1,21 +1,8 @@
 #!/usr/bin/env python
-import random
-#import time
+from typing import List, TypeVar
+Ord = TypeVar('Ord', int, float, str)
 
-#def timeit(method):
-#
-#    def timed(*args, **kw):
-#        ts = time.time()
-#        result = method(*args, **kw)
-#        te = time.time()
-#
-#        print '%r (%r, %r) %2.2f sec' % \
-#              (method.__name__, args, kw, te-ts)
-#        return result
-#
-#    return timed
-
-def partition(a, l, r):
+def partition(a: List[Ord], l: int, r: int) -> int:
     """ final element pivot """
     p = a[r-1]
     i = l - 1
@@ -27,7 +14,7 @@ def partition(a, l, r):
 
     return i+1
 
-def quickSort(arr, l=0, r=None):
+def quickSort(arr: List[Ord], l: int = 0, r: int = None):
     if r == None:
         r = len(arr)
     if l >= r:
@@ -36,12 +23,10 @@ def quickSort(arr, l=0, r=None):
     quickSort(arr, l, p)
     quickSort(arr, p+1, r)
 
-
-#file = open('quickSortData.txt', 'r')
-#data = [ int(line.rstrip()) for line in file ] 
-#data = [8,3,4,6,2,5,7,1]
-#@timeit
-def quickSortOuter(data):
+def quickSortOuter(data: List[Ord]) -> List[Ord]:
     quickSort(data)
     return data
 
+if __name__ == '__main__':
+    a = [8,3,4,6,2,5,7,1]
+    print(quickSortOuter(a))

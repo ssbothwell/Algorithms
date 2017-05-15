@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import os, sys
+from typing import List, TypeVar, Tuple
+Ord = TypeVar('Ord', int, float, str)
 
-def mergeSortInversions(arr):
+def mergeSortInversions(arr: List[Ord]) -> Tuple[List[Ord], int]:
     if len(arr) == 1:
         return arr, 0
     else:
-        a = arr[:len(arr)/2]
-        b = arr[len(arr)/2:]
+        a = arr[:len(arr)//2]
+        b = arr[len(arr)//2:]
 
         a, ai = mergeSortInversions(a)
         b, bi = mergeSortInversions(b)
@@ -30,10 +32,6 @@ def mergeSortInversions(arr):
 
         return c, inversions
 
-
-
-#file = open(sys.argv[1], 'r')
-#list = [int(x.rstrip()) for x in file]
-print mergeSortInversions([1,3,5,2,4,6])
-
-
+if __name__ == '__main__':
+    arr = [2,4,6,8,3]
+    print(mergeSortInversions(arr))

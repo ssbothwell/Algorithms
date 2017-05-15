@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+from typing import List, TypeVar
+Ord = TypeVar('Ord', int, float, str)
 
-def selSort(arr):
+def selSort(arr: List[Ord]) -> List[Ord]:
     for i in range(len(arr)-1,0,-1):
         # Temporary storage for index of highest element
         maxIndex = 0
@@ -16,3 +18,6 @@ def selSort(arr):
         arr[i], arr[maxIndex]  = arr[maxIndex], temp
     return arr
 
+if __name__ == '__main__':
+    a = [8,3,4,6,2,5,7,1]
+    print(selSort(a))
