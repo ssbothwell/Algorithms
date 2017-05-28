@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import sys
-sys.setrecursionlimit(3000)
 """
 The 0/1 Knapsack Problem
 
