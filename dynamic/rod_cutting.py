@@ -2,6 +2,7 @@
 import sys
 """
 The Rod Cutting Problem
+from "Introduction to Algorithms 3rd Edition"
 
 Given a  rod of length n, and a table of prices Pi for i = 1,2..n,
 determine the maximum revenue obtainable by cutting up the rod and
@@ -28,6 +29,7 @@ Example:
 """
 
 def cut_rod(p,n):
+    """ naive recursive version """
     if n <= 0:
         return 0
     q = -1
@@ -35,8 +37,39 @@ def cut_rod(p,n):
         q = max(q, p[i]+ cut_rod(p, n-i-1))
     return q
 
-if __name__ == '__main__':
+def memoized_cut_rod(p,n):
+    """ top down memoized version """
+    r = {}
+    for i in range(0,n+1):
+        r[i] = -1
+    def inner(p,n,r):
+        if r[n] >= 0:
+            return r[n]
+        if n == 0:
+            q = 0
+        else:
+            q = -1
+            for i in range(0,n):
+                q = max(q, p[i] + inner(p,n-i-1,r))
+        r[n] = q
+        return q
 
-    price = [ 1,5,8,9,10,17,17,20,24]#,30 ]
+    return inner(p,n,r)
+
+def memoized_buttom_up_cut_rod(p,n):
+    """ bottom up memoized version """
+    r = {}
+    r[0] = 0
+    for j in range(1,n):
+        q = -1
+        for i in range(1, j+1):
+            q = max(q, p[i] + r[j-i])
+        r[j] = q
+    return r[n-1]
+
+if  __name__ == '__main__':
+    price = [ 0,1,5,8,9,10,17,17,20,24,30 ]
     length = len(price)
     print(cut_rod(price, length))
+    print(memoized_cut_rod(price,length))
+    print(memoized_buttom_up_cut_rod(price, length))
