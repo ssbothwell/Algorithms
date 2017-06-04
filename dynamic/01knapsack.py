@@ -65,12 +65,12 @@ def load_items(filename):
     data = [ [int(y) for y in x.rstrip().split(' ')] for x in file]
     return data
 
-def print_result(result, reconstruct=False):
+def print_result(result, reconstruct_flag=False):
     for i in range(len(result)-1, -1, -1):
         print(i,result[i])
     print('   '+'  '.join([str(x) for x in range(1,len(items)+1)]))
     print("Optimal Value: %s" % result[-1][-1])
-    if reconstruct == True:
+    if reconstruct_flag == True:
         print("Items Chosen: %s" % reconstruct(result, items))
 
 if __name__ == '__main__':
@@ -79,9 +79,6 @@ if __name__ == '__main__':
             ,(4,2)
             ,(4,3)
             ]
-    #items = load_items('data_knapsack2.txt')
     result = knapsack(items, 6)
-    print(result)
-    #print(recursive_knapsack(items, 6))
-    #print("Optimal Value: %s" % result[-1][-1])
+    print_result(result, True)
 
