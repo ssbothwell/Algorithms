@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-import sys
 """
 Next Fit Bin Packing
+
+1. Place each item in a single bin until an item will not fit
+2. When an item won’t fit, close that bin and begin another
 
 """
 
