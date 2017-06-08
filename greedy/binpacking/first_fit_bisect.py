@@ -26,6 +26,10 @@ def first_fit(b_size: int, item_list: List[int]) -> Dict[int,list]:
 
     return { k: v for k, v in bins.items() if len(v) > 0 }
 
+def print_results(item_list: List[int], bins: Dict[int, list]):
+    for pair in bins.items():
+        print("Bin #%s: %s" % pair)
+    return
 
 if  __name__ == '__main__':
     sizes = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
@@ -33,5 +37,4 @@ if  __name__ == '__main__':
     bin_size = 10
 
     bins = first_fit(bin_size, sizes)
-    #print("%s bins were used" % bins_used)
-    print(bins)
+    print_results(sizes, bins)

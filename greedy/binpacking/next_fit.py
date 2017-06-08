@@ -9,23 +9,27 @@ Next Fit Bin Packing
 
 """
 
-def next_fit(b_size: int , items: List[int], bins: Dict[int, List[int]]) -> int:
+def next_fit(b_size: int , items: List[int]) -> Dict[int,list]:
     current_bin = 0
     capacity = b_size
+    # Bin Contents
+    bins = { x: [] for x in range(len(items))} # type: Dict[int, list]
     for i in range(0, len(items)):
         if (items[i] > capacity):
             current_bin += 1
             capacity = b_size
         capacity -= sizes[i]
         bins[current_bin].append(i)
-    return current_bin + 1
+    return { k: v for k, v in bins.items() if len(v) > 0 }
 
+def print_results(item_list: List[int], bins: Dict[int, list]):
+    for pair in bins.items():
+        print("Bin #%s: %s" % pair)
+    return
 
 if  __name__ == '__main__':
     sizes = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
     bin_size = 10
-    bins = { x: [] for x in range(len(sizes))} # type: Dict[int, list] 
 
-    bins_used = next_fit(bin_size, sizes, bins)
-    print("%s bins were used" % bins_used)
-    print({ k: v for k, v in bins.items() if len(v) > 0 })
+    bins = next_fit(bin_size, sizes)
+    print_results(sizes, bins)

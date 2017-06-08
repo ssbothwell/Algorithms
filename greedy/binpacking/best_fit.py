@@ -9,7 +9,7 @@ Best Fit Bin Packing
 
 """
 
-def best_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
+def best_fit(b_size: int, item_list: List[int]) -> Dict[int, list]:
     # Bin Count
     bin_count = 1
     # List of remaining capacities for each bin
@@ -33,14 +33,17 @@ def best_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
             bin_capacity[best_bin] -= item
             bins[best_bin].append(item_index)
 
-    return bin_count, { k: v for k, v in bins.items() if len(v) > 0 }
+    return { k: v for k, v in bins.items() if len(v) > 0 }
 
+def print_results(item_list: List[int], bins: Dict[int, list]):
+    for pair in bins.items():
+        print("Bin #%s: %s" % pair)
+    return
 
 if  __name__ == '__main__':
     sizes = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
     num_items = len(sizes)
     bin_size = 10
 
-    bins_used, bins = best_fit(bin_size, sizes)
-    print("%s bins were used" % bins_used)
-    print(bins)
+    bins = best_fit(bin_size, sizes)
+    print_results(sizes, bins)

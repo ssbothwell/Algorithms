@@ -9,7 +9,7 @@ First Fit Bin Packing
 
 """
 
-def first_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
+def first_fit(b_size: int, item_list: List[int]) -> Dict[int, list]:
     # Bin Count
     bin_count = 1
     # List of remaining capacities for each bin
@@ -28,14 +28,17 @@ def first_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
             bin_count += 1
             bin_capacity.append(10)
 
-    return bin_count-1, { k: v for k, v in bins.items() if len(v) > 0 }
+    return { k: v for k, v in bins.items() if len(v) > 0 }
 
+def print_results(item_list: List[int], bins: Dict[int, list]):
+    for pair in bins.items():
+        print("Bin #%s: %s" % pair)
+    return
 
 if  __name__ == '__main__':
     sizes = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
     num_items = len(sizes)
     bin_size = 10
 
-    bins_used, bins = first_fit(bin_size, sizes)
-    print("%s bins were used" % bins_used)
-    print(bins)
+    bins = first_fit(bin_size, sorted(sizes, reverse=True))
+    print_results(sizes, bins)

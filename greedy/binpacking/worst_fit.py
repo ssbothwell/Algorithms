@@ -4,12 +4,13 @@ from typing import Dict, Tuple, List
 """
 Worst Fit Bin Packing
 
-1. Try to place the item in the least full bin that will accommodate it, i.e., bin that will leave the most room left over
+1. Try to place the item in the least full bin that will accommodate
+   it, i.e., bin that will leave the most room left over
 2. If no bin is found, start a new bin
 
 """
 
-def worst_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
+def worst_fit(b_size: int, item_list: List[int]) -> Dict[int, List]:
     # Bin Count
     bin_count = 0
     # List of remaining capacities for each bin
@@ -35,15 +36,18 @@ def worst_fit(b_size: int, item_list: List[int]) -> Tuple[int, dict]:
             bin_capacity[best_bin] -= item
             bins[best_bin].append(item_index)
 
-    return bin_count, { k: v for k, v in bins.items() if len(v) > 0 }
+    return { k: v for k, v in bins.items() if len(v) > 0 }
 
+def print_results(item_list: List[int], bins: Dict[int, list]):
+    for pair in bins.items():
+        print("Bin #%s: %s" % pair)
+    return
 
 if  __name__ == '__main__':
     sizes = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
     num_items = len(sizes)
     bin_size = 10
 
-    bins_used, bins = worst_fit(bin_size, sizes)
-    print("%s bins were used" % bins_used)
-    print(bins)
+    bins = worst_fit(bin_size, sizes)
+    print_results(sizes, bins)
 
