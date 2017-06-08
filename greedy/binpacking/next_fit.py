@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from typing import Dict, Tuple, List
+from typing import Dict, List
 
 """
 Next Fit Bin Packing
@@ -17,7 +17,7 @@ def next_fit(b_size: int , items: List[int], bins: Dict[int, List[int]]) -> int:
             current_bin += 1
             capacity = b_size
         capacity -= sizes[i]
-        bins[current_bin].append(sizes[i])
+        bins[current_bin].append(i)
     return current_bin + 1
 
 
