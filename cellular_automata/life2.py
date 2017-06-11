@@ -26,7 +26,8 @@ def advance(board):
     # in board, creating a generator for each position in board. 
     # - chain(*map(...) combines these into one iterator which is
     # then passed into a set. 
-    # - The set is then bitwise OR'd with board. Not sure why..
+    # - The set is then bitwise OR'd with board. This combines 
+    # the neighbor set and the points from board into recalc.
     recalc = board | set(chain(*map(neighbors, board)))
     # Iterate through points in recalc
     for point in recalc:
