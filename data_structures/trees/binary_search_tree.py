@@ -273,7 +273,7 @@ class tree_node:
                 self.parent.right_child = None
         elif self.has_any_children():
             if self.has_left_child:
-                # if has a chikd then link parent to child
+                # if has a child then link parent to child
                 if self.is_left_child():
                     self.parent.left_child = self.left_child
                 else:
@@ -318,11 +318,11 @@ if __name__ == '__main__':
             if node.right_child != None:
                 r = traverse(node.right_child,level)
             if l and r:
-                print l,r
+                print(l,r)
             if l and not r:
-                print l
+                print(l)
             if r and not l:
-                print r
+                print(r)
             return node.key, level
 
-    print traverse(tree.root)
+    print(traverse(tree.root))

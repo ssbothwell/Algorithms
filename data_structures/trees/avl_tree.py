@@ -2,242 +2,295 @@
 
 """
 Class based AVL balanced binary search tree.
-Source: https://interactivepython.org/runestone/static/pythonds/Trees/AVLTreeImplementation.html
+Based on designs from:
+https://interactivepython.org/runestone/static/pythonds/Trees/AVLTreeImplementation.html
+http://www.geeksforgeeks.org/avl-tree-set-2-deletion/
 
-A tree constists of a single avl_tree object and
-many tree_node objects.
+A tree constists of a single AVL_Tree object and
+many Node objects.
 
-The binary_search_tree object stores a pointer to the
-root node, a value for the length of the tree (number of
-nodes), and methods for length(), put(), get(), delete(),
-some helper methods.
+What distinguises AVL_Tree from a plain Binary Search Tree is
+it's self balancing property. Whenever a node is inserted or
+deleted, the balance factors of the affected nodes are checked
+and Nodes are rotated to maintain balance in the tree. This
+ensures O(logN) insertion, deletion, and search performance.
 
-tree_node objects store a key, a data value, and pointers
-parent and left/right child nodes. They also have some
-helper methods to assist with the main binary_search_tree
-methods.
 """
 
-class AVL_tree:
+class Node:
+    def __init__(self, key, left=None, right=None, parent=None):
+        self.key = key
+        self.left = left
+        self.right= right
+        self.parent = parent
+        self.height = 1
+        self.payload = self.key
+
+class AVL_Tree:
     def __init__(self):
         self.root = None
-        self.size = 0
 
-    def length(self):
-        return self.size
+    def height(self, node: Node) -> int:
+        if node == None:
+            return 0
+        return node.height
 
-    def __len__(self):
-        return self.size
-
-    def __iter__(self):
-        return self.root.__iter__()
-
-    def put(self, key):
-        """
-        initial put() method.
-        If a root node exists, call recursive _put() method
-        with the root node as current selected node (currentNode).
-        Otherwise create root node with key,val from put().
-        """
-        if self.root:
-            # if tree has a root call the recursive _put() function
-            self._put(key, self.root)
+    def right_rotate(self, y: Node):
+        x = y.left
+        y.left = x.right
+        if x.right != None:
+            x.right.parent = y
+        x.parent = y.parent
+        if self.root == y:
+            self.root = x
         else:
-            # else create root
+            if y.parent.left == y:
+                y.parent.left = x
+            else:
+                y.parent.right = x
+        x.right = y
+        y.parent = x
+
+        y.height = max(self.height(y.left), self.height(y.right)) + 1
+        x.height = max(self.height(x.left), self.height(x.right)) + 1
+
+    def left_rotate(self, x: Node):
+        y = x.right
+        x.right = y.left
+
+        if y.left != None:
+           y.left.parent = x
+        y.parent = x.parent
+
+        if self.root == x:
+            self.root = y
+        else:
+            if x.parent.left == x:
+               x.parent.left = y
+            else:
+                x.parent.right = y
+        y.left = x
+        x.parent = y
+
+        x.height = max(self.height(x.left), self.height(x.right)) + 1
+        y.height = max(self.height(y.left), self.height(y.right)) + 1
+
+    def get_balance(self, node: Node):
+        if node == None:
+            return 0
+
+        return self.height(node.left) - self.height(node.right)
+
+    def insert(self, key: int, insertion_point=None):
+        node = Node(key)
+        # If the tree is empty then assign new node to root
+        if self.root == None:
             self.root = Node(key)
-        # update tree size
-        self.size += 1
-
-    def _put(self,key,currentNode):
-        """
-        Recursive put() method.
-        Checks if new key is greater or less then currently
-        selected node. If less it recurses on the left_child
-        otherwise it recurses on the right_child.
-        """
-        if key < currentNode.key:
-            if currentNode.has_left_child():
-                    self._put(key,currentNode.left_child)
-            else:
-                    currentNode.left_child = Node(key,parent=currentNode)
-                    self.updateBalance(currentNode.left_child)
-        else:
-            if currentNode.has_right_child():
-                    self._put(key,currentNode.right_child)
-            else:
-                    currentNode.right_child = Node(key,parent=currentNode)
-                    self.updateBalance(currentNode.right_child)
-
-    def updateBalance(self, node):
-        """
-        checks to see if the current node is out of balance enough
-        to require rebalancing.
-        """
-        if node.balance_factor > 1 or node.balance_factor < -1:
-            self.rebalance(node)
             return
-        if node.parent != None:
-            if node.is_left_child():
-                    node.parent.balance_factor += 1
-            elif node.is_right_child():
-                    node.parent.balance_factor -= 1
 
-            if node.parent.balance_factor != 0:
-                    self.updateBalance(node.parent)
+        if insertion_point == None:
+            insertion_point = self.root
 
-    def rebalance(self, node):
-      if node.balance_factor < 0:
-             if node.right_child.balance_factor > 0:
-                self.__right_rotate(node.right_child)
-                self.__left_rotate(node)
-             else:
-                self.__left_rotate(node)
-      elif node.balance_factor > 0:
-             if node.left_child.balance_factor < 0:
-                self.__left_rotate(node.left_child)
-                self.__right_rotate(node)
-             else:
-                self.__right_rotate(node)
-
-    def __left_rotate(self, rotRoot):
-        newRoot = rotRoot.right_child
-        rotRoot.right_child = newRoot.left_child
-        if newRoot.left_child != None:
-            newRoot.left_child.parent = rotRoot
-        newRoot.parent = rotRoot.parent
-        if rotRoot.is_root():
-            self.root = newRoot
-        else:
-            if rotRoot.is_left_child():
-                    rotRoot.parent.left_child = newRoot
+        if key < insertion_point.key:
+            if insertion_point.left:
+                self.insert(key, insertion_point.left)
             else:
-                rotRoot.parent.right_child = newRoot
-        newRoot.left_child = rotRoot
-        rotRoot.parent = newRoot
-        rotRoot.balance_factor = rotRoot.balance_factor + 1 - min(newRoot.balance_factor, 0)
-        newRoot.balance_factor = newRoot.balance_factor + 1 + max(rotRoot.balance_factor, 0)
-
-    def __right_rotate(self, rotRoot):
-        newRoot = rotRoot.left_child
-        rotRoot.left_child = newRoot.right_child
-        if newRoot.right_child != None:
-            newRoot.right_child.parent = rotRoot
-        newRoot.parent = rotRoot.parent
-        if rotRoot.is_root():
-            self.root = newRoot
-        else:
-            if rotRoot.is_left_child():
-                    rotRoot.parent.left_child = newRoot
+                insertion_point.left = node
+                node.parent = insertion_point
+        elif key > insertion_point.key:
+            if insertion_point.right:
+                self.insert(key, insertion_point.right)
             else:
-                rotRoot.parent.right_child = newRoot
-        newRoot.right_child = rotRoot
-        rotRoot.parent = newRoot
-        rotRoot.balance_factor = rotRoot.balance_factor + 1 - min(newRoot.balance_factor, 0)
-        newRoot.balance_factor = newRoot.balance_factor + 1 + max(rotRoot.balance_factor, 0)
+                insertion_point.right = node
+                node.parent = insertion_point
+        else:
+            return
 
-    def __setitem__(self, key, val):
-        """ overloads the [] setter to use the put() method """
-        self.put(key,val)
+        insertion_point.height = 1 + max(self.height(insertion_point.left), self.height(insertion_point.right))
+        balance = self.get_balance(insertion_point)
 
-    def get(self, key):
+        if balance > 1 and key < insertion_point.left.key:
+            # Left Left
+            self.right_rotate(insertion_point)
+        elif balance < -1 and key > insertion_point.right.key:
+            # Right Right
+            self.left_rotate(insertion_point)
+        elif balance > 1 and key > insertion_point.left.key:
+            # Left Right
+            self.left_rotate(insertion_point.left)
+            self.right_rotate(insertion_point)
+        elif balance < -1 and key < insertion_point.right.key:
+            # Right Left
+            self.right_rotate(insertion_point.right)
+            self.left_rotate(insertion_point)
+
+
+
+    def get(self, key: int):
         if self.root:
             res = self._get(key,self.root)
             if res:
-                return res.payload
+                return res
             else:
                 return None
         else:
             return None
 
-    def _get(self, key, currentNode):
+    def _get(self, key: int, currentNode: Node):
         if not currentNode:
             return None
         elif currentNode.key == key:
             return currentNode
         elif key < currentNode.key:
-            return self._get(key, currentNode.left_child)
+            return self._get(key, currentNode.left)
         else:
-            return self._get(key,currentNode.right_child)
+            return self._get(key,currentNode.right)
 
-    def __getitem__(self,key):
+    def __getitem__(self,key: int):
         """ Overloads [] getter to use get() """
         return self.get(key)
 
-    def __contains__(self,key):
-        """ Overloads `in` operator """
-        if self._get(key, self.root):
-            return True
+    def min_value(self, key: int):
+        """ Return the lowest value key in subtree with root 'node' """
+        current = self.get(key)
+        while current.left != None:
+            current = current.left
+        return current.key
+
+    def delete(self, key: int, root: Node = None):
+        """
+        When removing a node there are three cases:
+            1. The node has no children:
+                Delete pointer in parent node and
+                delete node object.
+            2. The node has one child:
+                Promote the child to take node's place
+                then delete node object.
+            3. The node has two children:
+                Search tree for a node that can replace
+                the node and preserve the binary structure
+                This will be the next largest node in
+                the tree and will never have two children.
+                This means it can be removed and swapped
+                in using the first two cases.
+        """
+        if self.root == None:
+            return
+        if root == None:
+            root = self.root
+
+        ## Find node to delete
+        # if key < root then recurse left
+        if key < root.key:
+            self.delete(key, root.left)
+        # if key > root then recurse right
+        elif key > root.key:
+            self.delete(key, root.right)
+        # otherwise key == root. Delete root
         else:
-            return False
+            # root is a leaf
+            if root.left == None and root.right == None:
+                if root == root.parent.left:
+                    root.parent.left = None
+                else:
+                    root.parent.right = None
+            # root has both children
+            elif root.left != None and root.right != None:
+                succ = self.get(self.min_value(root.right.key))
+                root.key = succ.key
+                root.payload = succ.payload
+                # Succ is a leaf 
+                # (succ cannot have a left child 
+                # because it is the min)
+                if succ.right == None:
+                    # Succ is a left child
+                    if succ.parent.left == succ:
+                        succ.parent.left = None
+                    # Succ is a right child
+                    else:
+                        succ.parent.right = None
+                # Succ has a right child
+                else:
+                    # Succ is a left child
+                    if succ.parent.left == succ:
+                        succ.parent.left = succ.right
+                        succ.right.parent = succ.parent
+                    # Succ is a right child
+                    else:
+                        succ.parent.right = succ.right
+                        succ.right.parent = succ.parent
+            # root has one child
+            else:
+                # Root is left child:
+                if root.parent.left == root:
+                    # Child is left
+                    if root.left != None:
+                        root.left.parent = root.parent
+                        root.parent.left = root.left
+                    else:
+                        root.right.parent = root.parent
+                        root.parent.left = root.right
+                # Root is right child
+                else:
+                    # Child is left
+                    if root.left != None:
+                        root.left.parent = root.parent
+                        root.parent.right = root.left
+                    else:
+                        root.right.parent = root.parent
+                        root.parent.right = root.right
 
+        # Update height of node
+        root.height = max(self.height(root.left), self.height(root.right)) + 1
 
-class Node:
-    def __init__(self, key, height=1, left_child=None, right_child=None, parent=None):
-        self.key = key
-        self.height = height
-        self.left_child = left_child
-        self.right_child = right_child
-        self.parent = parent
-        self.balance_factor = 0
+        # Get balance factor
+        balance = self.get_balance(root)
+        # Use balance factor to rotate
 
-    def has_left_child(self):
-        return self.left_child
+        # Left Left
+        if balance > 1 and self.get_balance(root.left) >= 0:
+            self.right_rotate(root)
+        # Left Right
+        if balance > 1 and self.get_balance(root.left) < 0:
+            self.left_rotate(root.left)
+            self.right_rotate(root)
+        # Right Right
+        if balance < -1 and self.get_balance(root.right) <= 0:
+            self.left_rotate(root)
+        # Right Left
+        if balance < -1 and self.get_balance(root.right) > 0:
+            self.right_rotate(root.right)
+            self.left_rotate(root)
 
-    def has_right_child(self):
-        return self.right_child
-
-    def has_any_children(self):
-        """ True if node  has any children """
-        return self.left_child or self.right_child
-
-    def is_left_child(self):
-        return self.parent and self.parent.left_child == self
-
-    def is_right_child(self):
-        return self.parent and self.parent.right_child == self
-
-    def is_root(self):
-        """ True if node has no parent """
-        return not self.parent
-
-    def is_leaf(self):
-        """ True if node has no children """
-        return not (self.left_child or self.right_child)
-
-    def has_both_children(self):
-        return self.left_child and self.right_child
-
-    def __iter__(self):
-        if self:
-            if self.has_left_child():
-                for elem in self.left_child:
-                    yield elem
-                yield self.key
-            if self.has_right_child():
-                for elem in self.right_child:
-                    yield elem
-
-
-def traverse(rootnode):
+def traverse(rootnode: Node):
     thislevel = [rootnode]
     while thislevel:
         nextlevel = list()
         row_string = ""
         for n in thislevel:
-            row_string += str(n.key) + " "
-            if n.left_child: nextlevel.append(n.left_child)
-            if n.right_child: nextlevel.append(n.right_child)
+            if n.parent != None:
+                if n.parent.left == n:
+                    relation = "L"
+                elif n.parent.right == n:
+                    relation = "R"
+            else:
+                relation = "ro"
+            row_string += str(n.key) + str((relation, n.height)) + " "
+            if n.left: nextlevel.append(n.left)
+            if n.right: nextlevel.append(n.right)
         print(row_string)
         thislevel = nextlevel
 
+
 if __name__ == '__main__':
-    tree = AVL_tree()
-    tree.put(10)
-    tree.put(20)
-    tree.put(30)
-    tree.put(40)
-    tree.put(50)
-    tree.put(25)
-
+    tree = AVL_Tree()
+    tree.insert(10)
+    tree.insert(15)
+    tree.insert(11)
+    tree.insert(20)
+    tree.insert(17)
+    tree.insert(25)
+    tree.insert(18)
+    tree.insert(19)
+    tree.delete(20)
     traverse(tree.root)
-
