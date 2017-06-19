@@ -25,6 +25,7 @@ class Node:
         self.parent = parent
         self.height = 1
         self.payload = self.key
+        self.count = 1
 
 class AVL_Tree:
     def __init__(self):
@@ -91,7 +92,9 @@ class AVL_Tree:
         if insertion_point == None:
             insertion_point = self.root
 
-        if key < insertion_point.key:
+        if key == insertion_point.key:
+            insertion_point.count += 1
+        elif key < insertion_point.key:
             if insertion_point.left:
                 self.insert(key, insertion_point.left)
             else:
@@ -188,8 +191,11 @@ class AVL_Tree:
             self.delete(key, root.right)
         # otherwise key == root. Delete root
         else:
+            # node is a duplicate
+            if root.count > 1:
+                root.count -= 1
             # root is a leaf
-            if root.left == None and root.right == None:
+            elif root.left == None and root.right == None:
                 if root == root.parent.left:
                     root.parent.left = None
                 else:
