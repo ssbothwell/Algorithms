@@ -326,3 +326,5 @@ if __name__ == '__main__':
             return node.key, level
 
     print(traverse(tree.root))
+    for i in tree:
+        print(i)

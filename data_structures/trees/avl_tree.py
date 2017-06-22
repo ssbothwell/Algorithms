@@ -18,14 +18,33 @@ ensures O(logN) insertion, deletion, and search performance.
 """
 
 class Node:
-    def __init__(self, key, left=None, right=None, parent=None):
+    def __init__(self, key, left=None, right=None, parent=None, payload=None):
         self.key = key
         self.left = left
         self.right= right
         self.parent = parent
         self.height = 1
-        self.payload = self.key
+        if payload:
+            self.payload = payload
+        else:
+            self.payload = self.key
         self.count = 1
+
+    #def __iter__(self):
+    #    if self.left:
+    #        yield from self.left
+    #    yield self
+    #    if self.right:
+    #        yield from self.right
+        #if self:
+        #    print('foo')
+        #    if self.left != None:
+        #        for elem in self.left:
+        #            yield elem
+        #    yield self.key
+        #    if self.right != None:
+        #        for elem in self.right:
+        #            yield elem
 
 class AVL_Tree:
     def __init__(self):
@@ -82,11 +101,13 @@ class AVL_Tree:
 
         return self.height(node.left) - self.height(node.right)
 
-    def insert(self, key: int, insertion_point=None):
+    def insert(self, key: int, insertion_point=None, payload=None):
         node = Node(key)
+        if payload != None:
+            node.payload = payload
         # If the tree is empty then assign new node to root
         if self.root == None:
-            self.root = Node(key)
+            self.root = node
             return
 
         if insertion_point == None:
@@ -153,6 +174,12 @@ class AVL_Tree:
         """ Overloads [] getter to use get() """
         return self.get(key)
 
+    def __contains__(self,key):
+        if self.get(key):
+            return True
+        else:
+            return False
+
     def min_value(self, key: int):
         """ Return the lowest value key in subtree with root 'node' """
         current = self.get(key)
@@ -160,7 +187,7 @@ class AVL_Tree:
             current = current.left
         return current.key
 
-    def delete(self, key: int, root: Node = None):
+    def delete(self, key: int, starting_node: Node = None):
         """
         When removing a node there are three cases:
             1. The node has no children:
@@ -179,32 +206,35 @@ class AVL_Tree:
         """
         if self.root == None:
             return
-        if root == None:
-            root = self.root
+        if starting_node == None:
+            starting_node = self.root
 
         ## Find node to delete
-        # if key < root then recurse left
-        if key < root.key:
-            self.delete(key, root.left)
-        # if key > root then recurse right
-        elif key > root.key:
-            self.delete(key, root.right)
-        # otherwise key == root. Delete root
+        # if key < starting_node then recurse left
+        if key < starting_node.key:
+            self.delete(key, starting_node.left)
+        # if key > starting_node then recurse right
+        elif key > starting_node.key:
+            self.delete(key, starting_node.right)
+        # otherwise key == starting_node then delete starting_node
         else:
-            # node is a duplicate
-            if root.count > 1:
-                root.count -= 1
-            # root is a leaf
-            elif root.left == None and root.right == None:
-                if root == root.parent.left:
-                    root.parent.left = None
+            #if root == self.root:
+            #    self.root = None
+            #    return
+            # Node is a duplicate
+            if starting_node.count > 1:
+                starting_node.count -= 1
+            # Node is a leaf
+            elif starting_node.left == None and starting_node.right == None:
+                if starting_node == starting_node.parent.left:
+                    starting_node.parent.left = None
                 else:
-                    root.parent.right = None
-            # root has both children
-            elif root.left != None and root.right != None:
-                succ = self.get(self.min_value(root.right.key))
-                root.key = succ.key
-                root.payload = succ.payload
+                    starting_node.parent.right = None
+            # Node has both children
+            elif starting_node.left != None and starting_node.right != None:
+                succ = self.get(self.min_value(starting_node.right.key))
+                starting_node.key = succ.key
+                starting_node.payload = succ.payload
                 # Succ is a leaf 
                 # (succ cannot have a left child 
                 # because it is the min)
@@ -225,48 +255,61 @@ class AVL_Tree:
                     else:
                         succ.parent.right = succ.right
                         succ.right.parent = succ.parent
-            # root has one child
+            # Node has one child
             else:
-                # Root is left child:
-                if root.parent.left == root:
+                if starting_node == self.root:
                     # Child is left
-                    if root.left != None:
-                        root.left.parent = root.parent
-                        root.parent.left = root.left
+                    if starting_node.left != None:
+                        starting_node.left.parent = None
+                        self.root = starting_node.left
+                    # Child is right
                     else:
-                        root.right.parent = root.parent
-                        root.parent.left = root.right
-                # Root is right child
+                        starting_node.right.parent = None
+                        self.root = starting_node.right
+                # Node is left child:
+                elif starting_node.parent.left == root:
+                    # Child is left
+                    if starting_node.left != None:
+                        starting_node.left.parent = starting_node.parent
+                        starting_node.parent.left = starting_node.left
+                    # Child is right
+                    else:
+                        starting_node.right.parent = starting_node.parent
+                        starting_node.parent.left = starting_node.right
+                # Node is right child
                 else:
                     # Child is left
-                    if root.left != None:
-                        root.left.parent = root.parent
-                        root.parent.right = root.left
+                    if starting_node.left != None:
+                        starting_node.left.parent = starting_node.parent
+                        starting_node.parent.right = starting_node.left
                     else:
-                        root.right.parent = root.parent
-                        root.parent.right = root.right
+                        starting_node.right.parent = starting_node.parent
+                        starting_node.parent.right = starting_node.right
 
         # Update height of node
-        root.height = max(self.height(root.left), self.height(root.right)) + 1
+        starting_node.height = max(self.height(starting_node.left), self.height(starting_node.right)) + 1
 
         # Get balance factor
-        balance = self.get_balance(root)
+        balance = self.get_balance(starting_node)
         # Use balance factor to rotate
 
         # Left Left
-        if balance > 1 and self.get_balance(root.left) >= 0:
-            self.right_rotate(root)
+        if balance > 1 and self.get_balance(starting_node.left) >= 0:
+            self.right_rotate(starting_node)
         # Left Right
-        if balance > 1 and self.get_balance(root.left) < 0:
-            self.left_rotate(root.left)
-            self.right_rotate(root)
+        if balance > 1 and self.get_balance(starting_node.left) < 0:
+            self.left_rotate(starting_node.left)
+            self.right_rotate(starting_node)
         # Right Right
-        if balance < -1 and self.get_balance(root.right) <= 0:
-            self.left_rotate(root)
+        if balance < -1 and self.get_balance(starting_node.right) <= 0:
+            self.left_rotate(starting_node)
         # Right Left
-        if balance < -1 and self.get_balance(root.right) > 0:
-            self.right_rotate(root.right)
-            self.left_rotate(root)
+        if balance < -1 and self.get_balance(starting_node.right) > 0:
+            self.right_rotate(starting_node.right)
+            self.left_rotate(starting_node)
+
+    def __delitem__(self,key):
+        self.delete(key)
 
 def traverse(rootnode: Node):
     thislevel = [rootnode]
@@ -290,13 +333,12 @@ def traverse(rootnode: Node):
 
 if __name__ == '__main__':
     tree = AVL_Tree()
-    tree.insert(10)
-    tree.insert(15)
-    tree.insert(11)
-    tree.insert(20)
-    tree.insert(17)
+    tree.insert(10, payload=5)
+    #tree.insert(15)
+    #tree.insert(11)
+    #tree.insert(20)
+    #tree.insert(17)
     tree.insert(25)
-    tree.insert(18)
-    tree.insert(19)
-    tree.delete(20)
+    #tree.insert(18)
+    tree.delete(10)
     traverse(tree.root)
