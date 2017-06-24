@@ -15,7 +15,7 @@ def first_fit(b_size: int, item_list: List[int]) -> Dict[int, list]:
     # List of remaining capacities for each bin
     bin_capacity = [b_size] * bin_count
     # Bin Contents
-    bins = { x: [] for x in range(len(item_list))} # type: Dict[int, list]
+    bins = { x: [] for x in range(len(item_list)//2)} # type: Dict[int, list]
 
     for item_index, item in enumerate(item_list):
         for bin_index in range(bin_count):
