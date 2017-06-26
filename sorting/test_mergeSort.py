@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-from mergeSort import *
+from merge_sort import *
 
 class testMergeSort(unittest.TestCase):
     def setUp(self):

@@ -4,7 +4,7 @@ Ord = TypeVar('Ord', int, float, str)
 
 def bubbleSort(arr: List[Ord]) -> List[Ord]:
     # Loop through list once per element
-    for _ in range ( 0, len(arr)):
+    for _ in range(0, len(arr)):
         for i in range(0, len(arr)-1):
             # compare and swap adjacent elements
             if arr[i] > arr[i+1]:
@@ -13,5 +13,5 @@ def bubbleSort(arr: List[Ord]) -> List[Ord]:
 
 
 if __name__ == '__main__':
-    a = [ 5, 3 ,2, 4, 1 ]
-    print(bubbleSort(a))
+    unsorted_list = [5, 3, 2, 4, 1]
+    print(bubbleSort(unsorted_list))
