@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import time
+from pyutils import timeit
 from random import randint
 from collections import deque
 from typing import Dict, Tuple, List
+
 from avl_tree import AVL_Tree, Node, traverse
 from best_fit import *
 from first_fit_bisect import *
@@ -66,21 +67,6 @@ class BinTree(AVL_Tree):
         return best_bin
 
 
-def timeit(method):
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-        if 'log_time' in kw:
-            name = kw.get('log_name', method.__name__.upper())
-            kw['log_time'][name] = int((te - ts) * 1000)
-        else:
-            print( '%r  %2.2f ms' % \
-                  (method.__name__, (te - ts) * 1000))
-        return result
-    return timed
-
-
 @timeit
 def avl_best_fit(items: List[int], bin_size: int) -> dict:
     tree = BinTree(bin_size, items)
@@ -94,14 +80,8 @@ def list_best_fit(items: List[int], bin_size: int) -> dict:
     return best_fit(bin_size, items)
 
 
-@timeit
-def bisect_first_fit(items: List[int], bin_size: int) -> dict:
-    return first_fit(bin_size, items)
-
-
 if __name__ == '__main__':
     items = [1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6]
     items = [randint(1,10) for _ in range(10000)]
     avl_best_fit(items, 10)
     list_best_fit(items, 10)
-    #bisect_first_fit(items, 10)
