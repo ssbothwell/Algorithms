@@ -15,7 +15,6 @@ ensures O(logN) insertion, deletion, and search performance.
 import time
 import random
 from typing import Optional
-from collections import namedtuple
 
 class Node:
     __slots__ = ('key', 'left', 'right', 'parent', 'payload', 'height', 'count')
@@ -86,7 +85,8 @@ class AvlTree:
             right_child.left.height if right_child.left else 0,
             right_child.right.height if right_child.right else 0) + 1
 
-    def get_balance(self, node: Node) -> int:
+    @staticmethod
+    def get_balance(node: Node) -> int:
         """ Returns balance factor for a node """
         if node is None:
             return 0
@@ -221,7 +221,9 @@ class AvlTree:
                 starting_node.count -= 1
             # starting_node is a leaf
             elif starting_node.left is None and starting_node.right is None:
-                if starting_node == starting_node.parent.left:
+                if starting_node.parent is None:
+                    self.root = None
+                elif starting_node == starting_node.parent.left:
                     starting_node.parent.left = None
                 else:
                     starting_node.parent.right = None
@@ -291,20 +293,16 @@ class AvlTree:
 
         # Left Left
         if balance > 1 and self.get_balance(starting_node.left) >= 0:
-            print('L L')
             self.right_rotate(starting_node)
         # Left Right
         if balance > 1 and self.get_balance(starting_node.left) < 0:
-            print('L R')
             self.left_rotate(starting_node.left)
             self.right_rotate(starting_node)
         # Right Right
         if balance < -1 and self.get_balance(starting_node.right) <= 0:
-            print('R R')
             self.left_rotate(starting_node)
         # Right Left
         if balance < -1 and self.get_balance(starting_node.right) > 0:
-            print('R L')
             self.right_rotate(starting_node.right)
             self.left_rotate(starting_node)
 
@@ -353,14 +351,20 @@ def timeit(method):
 
 
 @timeit
-def avl_inserter(items):
+def avl_inserter(tree_object, items):
     """ Tree insertion speed test """
     samples = random.sample(range(1, 1000000), items)
-    sample_tree = AvlTree()
+    sample_tree = tree_object
     for sample in samples:
         sample_tree.insert(sample)
     return None
 
+@timeit
+def avl_deleter(tree_object):
+    """ delete every node in the tree iteratively """
+    while tree_object.root is not None:
+        if tree_object.root:
+            tree_object.delete(tree_object.root.key)
 @timeit
 def list_inserter(items):
     """ List Insertion speed test """
@@ -371,10 +375,11 @@ def list_inserter(items):
     return None
 
 if __name__ == '__main__':
-    avl_inserter(500000)
+    tree = AvlTree()
+    avl_inserter(tree, 100000)
+    avl_deleter(tree)
     #list_inserter(500000)
-    #tree = AvlTree()
-    #tree.insert(10, payload=5)
+    #tree.insert(10)
     #tree.insert(15, payload=3)
     #tree.insert(11, payload=4)
     #tree.insert(20)
@@ -384,5 +389,3 @@ if __name__ == '__main__':
     #tree.insert(30)
     #tree.insert(40)
     #traverse(tree.root)
-    #n = Node(10)
-    #print(n)
