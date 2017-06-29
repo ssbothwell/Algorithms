@@ -15,8 +15,10 @@ ensures O(logN) insertion, deletion, and search performance.
 import time
 import random
 from typing import Optional
+from collections import namedtuple
 
 class Node:
+    __slots__ = ('key', 'left', 'right', 'parent', 'payload', 'height', 'count')
     def __init__(self, key, left=None, right=None, parent=None, payload=None):
         self.key = key
         self.left = left
@@ -123,7 +125,10 @@ class AvlTree:
         search_queue = [insertion_point]
         index = 0
         while search_queue:
-            if key < search_queue[index].key:
+            if key == search_queue[index].key:
+                search_queue[index].count += 1
+                break
+            elif key < search_queue[index].key:
                 if search_queue[index].left:
                     search_queue.append(search_queue[index].left)
                     index += 1
@@ -366,16 +371,18 @@ def list_inserter(items):
     return None
 
 if __name__ == '__main__':
-    #avl_inserter(100000)
+    avl_inserter(500000)
     #list_inserter(500000)
-    tree = AvlTree()
-    tree.insert(10, payload=5)
-    tree.insert(15, payload=3)
-    tree.insert(11, payload=4)
-    tree.insert(20)
-    tree.insert(17)
-    tree.insert(25)
-    tree.insert(18)
-    tree.insert(30)
-    tree.insert(40)
-    traverse(tree.root)
+    #tree = AvlTree()
+    #tree.insert(10, payload=5)
+    #tree.insert(15, payload=3)
+    #tree.insert(11, payload=4)
+    #tree.insert(20)
+    #tree.insert(17)
+    #tree.insert(25)
+    #tree.insert(18)
+    #tree.insert(30)
+    #tree.insert(40)
+    #traverse(tree.root)
+    #n = Node(10)
+    #print(n)
