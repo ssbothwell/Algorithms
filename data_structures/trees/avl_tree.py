@@ -16,19 +16,16 @@ import time
 import random
 from typing import Optional
 
-class Node:
-    __slots__ = ('key', 'left', 'right', 'parent', 'payload', 'height', 'count')
-    def __init__(self, key, left=None, right=None, parent=None, payload=None):
+class Node(object):
+    #__slots__ = ('key', 'left', 'right', 'parent', 'height', 'count')
+    def __init__(self, key, left=None, right=None, parent=None):
         self.key = key
         self.left = left
         self.right = right
         self.parent = parent
         self.height = 1
-        if payload:
-            self.payload = payload
-        else:
-            self.payload = self.key
         self.count = 1
+        self.data = []
 
 
 class AvlTree:
@@ -109,15 +106,13 @@ class AvlTree:
             self.right_rotate(node.right)
             self.left_rotate(node)
 
-    def insert(self, key: int, insertion_point=None, payload=None) -> None:
+    def insert(self, key: int, insertion_point=None) -> Node:
         """ Insert new node into the tree """
         node = Node(key)
-        if payload is not None:
-            node.payload = payload
         # If the tree is empty then assign new node to root
         if self.root is None:
             self.root = node
-            return
+            return node
 
         if insertion_point is None:
             insertion_point = self.root
@@ -127,7 +122,7 @@ class AvlTree:
         while search_queue:
             if key == search_queue[index].key:
                 search_queue[index].count += 1
-                break
+                return search_queue[index]
             elif key < search_queue[index].key:
                 if search_queue[index].left:
                     search_queue.append(search_queue[index].left)
@@ -152,6 +147,7 @@ class AvlTree:
             balance = self.get_balance(queued_node)
             if balance > 1 or balance < -1:
                 self.rotate_manager(queued_node, key, balance)
+        return node
 
 
     def get(self, key: int) -> Optional[Node]:
@@ -231,7 +227,7 @@ class AvlTree:
             elif starting_node.left != None and starting_node.right != None:
                 succ = self.get(self.min_value(starting_node.right.key))
                 starting_node.key = succ.key
-                starting_node.payload = succ.payload
+                starting_node.data = succ.data
                 # succ is a leaf
                 # (succ cannot have a left child because it is the min)
                 if succ.right is None:
@@ -324,7 +320,7 @@ def traverse(rootnode: Node) -> None:
                     relation = "R"
             else:
                 relation = "ro"
-            row_string += str(node.key) + str((relation, node.height)) + " "
+            row_string += str(node.key) + str((relation, node.data)) + " "
             if node.left:
                 nextlevel.append(node.left)
             if node.right:
@@ -376,16 +372,18 @@ def list_inserter(items):
 
 if __name__ == '__main__':
     tree = AvlTree()
-    avl_inserter(tree, 100000)
-    avl_deleter(tree)
+    #avl_inserter(tree, 100000)
+    #avl_deleter(tree)
     #list_inserter(500000)
-    #tree.insert(10)
-    #tree.insert(15, payload=3)
-    #tree.insert(11, payload=4)
+    tree.insert(5)
+    tree.insert(10)
+    tree.insert(10)
+    #tree.insert(15)
+    #tree.insert(11)
     #tree.insert(20)
     #tree.insert(17)
     #tree.insert(25)
     #tree.insert(18)
     #tree.insert(30)
     #tree.insert(40)
-    #traverse(tree.root)
+    traverse(tree.root)
