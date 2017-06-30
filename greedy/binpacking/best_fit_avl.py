@@ -21,10 +21,10 @@ class BestFitTree(AvlTree):
         self.bin_size = bin_capacity
         self.root = Node(bin_capacity)
         self.root.data = [0]
-        self.bin_contents = {0:[]} # Type: Dict[int,list]
+        self.bin_contents = {0:[]} # type: Dict[int,list]
         self.bin_count = 0
 
-    def update_bin(self, old_bin: int, new_key: int) -> None:
+    def update_bin(self, old_bin: Node, new_key: int) -> None:
         """ Update the bin's key after a new item has been added """
         if new_key is 0:
             old_bin.data.pop()
