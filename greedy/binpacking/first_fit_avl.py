@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from typing import Dict, Tuple, List
-from avl_tree import AVL_Tree, Node
+from avl_tree import AvlTree, Node
 
 """
 First Fit Bin Packing
@@ -10,7 +10,7 @@ First Fit Bin Packing
 
 """
 
-class bin_tree(AVL_Tree):
+class bin_tree(AvlTree):
     def next_search(self, item_size):
         """ Returns lowest key greater then item_size"""
         if self.root:
