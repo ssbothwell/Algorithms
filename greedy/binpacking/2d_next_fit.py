@@ -3,10 +3,21 @@
 """
 2 dimensional Next Fit bin packing
 
+Bins are trees with each node having an x and y
+capacity and an occupied bool. Tree nodes have
+left and bottom children.
 
+Items are namedtuples with x and y values. When
+Items are inserted into a bin tree, insert()
+recurses over child nodes until it finds the first
+unoccupied node that fits the Item. The node is
+resized to Item and two child nodes are created
+to take up the remaining space to the right and
+below the item.
 """
 
 from typing import NamedTuple
+from collections import deque
 #from avl_tree import AvlTree, Node, traverse
 
 class CornerPoint(NamedTuple):
@@ -17,12 +28,14 @@ class CornerPoint(NamedTuple):
     x: int
     y: int
 
+
 class Item(NamedTuple):
     """
     namedtuple representing items placed in the bin.
     """
     width: int
     height: int
+
 
 class BinTree:
     """
@@ -69,11 +82,28 @@ class BinTree:
                 else:
                     return False
 
+
+
     def print_layout(self):
         """
-        Returns bin layout in a renderable format
+        Iterative preorder tree traversal
+        Returns items as a list of nested tuples:
+            [((x,y),(width,height)),..,((x,y),(width,height)]
         """
-        pass
+
+        stack = deque([self])
+        result = []
+        while stack:
+            node = stack.popleft()
+            if node.occupied:
+                result.append((node.corner, (node.width, node.height)))
+            if node.right:
+                stack.append(node.right)
+            if node.bottom:
+                stack.append(node.bottom)
+        print(result)
+        return result
+
 
 def node_stage(node: BinTree) -> None:
     """
@@ -95,12 +125,13 @@ if __name__ == '__main__':
     ROOT.insert(ITEM1)
     ROOT.insert(ITEM2)
     ROOT.insert(ITEM3)
-    print("ROOT")
-    node_stage(ROOT)
-    print("")
-    print("ROOT.right")
-    node_stage(ROOT.right)
-    print("")
-    print("ROOT.bottom")
-    node_stage(ROOT.bottom)
-    print("")
+    ROOT.print_layout()
+    #print("ROOT")
+    #node_stage(ROOT)
+    #print("")
+    #print("ROOT.right")
+    #node_stage(ROOT.right)
+    #print("")
+    #print("ROOT.bottom")
+    #node_stage(ROOT.bottom)
+    #print("")
