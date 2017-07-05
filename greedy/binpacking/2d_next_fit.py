@@ -16,7 +16,7 @@ to take up the remaining space to the right and
 below the item.
 """
 
-from typing import NamedTuple
+from typing import NamedTuple, Tuple, List
 from collections import deque
 #from avl_tree import AvlTree, Node, traverse
 
@@ -35,6 +35,8 @@ class Item(NamedTuple):
     """
     width: int
     height: int
+    x: int = 0
+    y: int = 0
 
 
 class BinTree:
@@ -84,7 +86,7 @@ class BinTree:
 
 
 
-    def print_layout(self):
+    def print_layout(self, print_stats=False):
         """
         Iterative preorder tree traversal
         Returns items as a list of nested tuples:
@@ -97,6 +99,8 @@ class BinTree:
             node = stack.popleft()
             if node.occupied:
                 result.append((node.corner, (node.width, node.height)))
+                if print_stats:
+                    node.node_stats()
             if node.right:
                 stack.append(node.right)
             if node.bottom:
@@ -105,16 +109,17 @@ class BinTree:
         return result
 
 
-def node_stage(node: BinTree) -> None:
-    """
-    Node Property Viewer
-    """
-    print('width: %s,  height: %s' % (node.width, node.height))
-    print('position: %s, %s' % (node.corner))
-    print('Node %s occupied' % ('is' if node.occupied else 'is not'))
-    print('Node parent: %s' % (True if node.parent else False))
-    print('Node right child: %s' % (True if node.right else False))
-    print('Node bottom child: %s' % (True if node.bottom else False))
+    def node_stats(self) -> None:
+        """
+        Node Property Viewer
+        """
+        print('width: %s,  height: %s' % (self.width, self.height))
+        print('position: %s, %s' % (self.corner))
+        print('Node %s occupied' % ('is' if self.occupied else 'is not'))
+        print('Node parent: %s' % (True if self.parent else False))
+        print('Node right child: %s' % (True if self.right else False))
+        print('Node bottom child: %s' % (True if self.bottom else False))
+        print("")
 
 
 if __name__ == '__main__':
@@ -126,12 +131,3 @@ if __name__ == '__main__':
     ROOT.insert(ITEM2)
     ROOT.insert(ITEM3)
     ROOT.print_layout()
-    #print("ROOT")
-    #node_stage(ROOT)
-    #print("")
-    #print("ROOT.right")
-    #node_stage(ROOT.right)
-    #print("")
-    #print("ROOT.bottom")
-    #node_stage(ROOT.bottom)
-    #print("")
