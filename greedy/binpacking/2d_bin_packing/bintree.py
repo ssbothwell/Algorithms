@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-
 """
-2 dimensional Next Fit bin packing
+2 dimensional Bin Packing Data Structure
 
 Bins are trees with each node having an x and y
 capacity and an occupied bool. Tree nodes have
@@ -18,7 +17,6 @@ below the item.
 
 from typing import NamedTuple, Tuple, List
 from collections import deque
-#from avl_tree import AvlTree, Node, traverse
 
 class CornerPoint(NamedTuple):
     """
@@ -130,4 +128,4 @@ if __name__ == '__main__':
     ROOT.insert(ITEM1)
     ROOT.insert(ITEM2)
     ROOT.insert(ITEM3)
-    ROOT.print_layout()
+    ROOT.print_layout(print_stats=True)
