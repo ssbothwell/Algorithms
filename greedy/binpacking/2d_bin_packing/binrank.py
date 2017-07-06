@@ -16,17 +16,31 @@ from ../avl_tree import AvlTree, Node, traverse
 class BinRank:
     def __init__(self):
         self.bin_dict = {}
-        pass
+        self.tree = AvlTree()
 
 
     def _add_bin(self) -> None:
+        """
+        private method. Creates a new BinTree and adds
+        it to bin_dict and the AVL tree.
+        """
         pass
 
 
     def pick_bin(self, item_dims: tuple) -> int:
+        """
+        public method. Selects optimal BinTree (or creates
+        a new BinTree) for item insertion.
+        Returns BinTre ID.
+        """
         pass
 
 
+    def print_layouts(self):
+        """
+        Returns layouts for all BinTrees
+        """
+        pass
 
 
 if __name__ == '__main__':
