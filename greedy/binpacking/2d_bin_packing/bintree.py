@@ -15,7 +15,7 @@ to take up the remaining space to the right and
 below the item.
 """
 
-from typing import NamedTuple, Tuple, List
+from typing import NamedTuple
 from collections import deque
 
 class CornerPoint(NamedTuple):
@@ -42,7 +42,8 @@ class BinTree:
     Tree data structure for holding the contents of a
     2 dimension bin.
     """
-    def __init__(self, width: int = 4, height: int = 8, occupied: bool = False, corner: CornerPoint = (0, 0)) -> None:
+    def __init__(self, width: int = 4, height: int = 8,
+                 occupied: bool = False, corner: CornerPoint = (0, 0)) -> None:
         self.corner = corner
         self.width = width
         self.height = height
@@ -50,6 +51,10 @@ class BinTree:
         self.parent = None
         self.right = None
         self.bottom = None
+        if not self.occupied:
+            self.largest_child = (self.width, self.height)
+        else:
+            self.largest_child = None
 
 
     def insert(self, item: Item) -> bool:
@@ -59,32 +64,55 @@ class BinTree:
         Inserts recursively as a side-effect
         Returns True or False if Item fit in bin
         """
-        if item.height <= self.height:
-            if self.occupied is False:
-                if self.height - item.height > 0:
-                    self.bottom = BinTree(width=self.width, height=self.height-item.height)
-                    self.bottom.parent = self
-                if self.width - item.width > 0:
-                    self.right = BinTree(width=self.width-item.width, height=item.height)
-                    self.right.parent = self
-                self.height, self.width = item.height, item.width
-                self.occupied = True
-                if self.right:
-                    self.right.corner = (self.width, self.corner[1])
-                if self.bottom:
-                    self.bottom.corner = (self.corner[0], self.height)
-                return True
+        if not self.occupied and item.width <= self.width and item.height <= self.height:
+            if self.height - item.height > 0:
+                self.bottom = BinTree(width=self.width, height=self.height-item.height)
+                self.bottom.parent = self
+            if self.width - item.width > 0:
+                self.right = BinTree(width=self.width-item.width, height=item.height)
+                self.right.parent = self
+            self.height, self.width = item.height, item.width
+            self.occupied = True
+            if self.right:
+                self.right.corner = (self.width, self.corner[1])
+            if self.bottom:
+                self.bottom.corner = (self.corner[0], self.height)
+            self.calc_largest_child()
+            return True
+        else:
+            if self.right and self.right.width >= item.width:
+                self.right.insert(item)
+            elif self.bottom and self.bottom.height >= item.height:
+                self.bottom.insert(item)
             else:
-                if self.right.width >= item.width:
-                    self.right.insert(item)
-                elif self.bottom.height >= item.height:
-                    self.bottom.insert(item)
-                else:
-                    return False
+                return False
 
 
+    def calc_largest_child(self) -> None:
+        """
+        Updates self.largest_child for each node recursively
+        back to the root node
+        """
+        choices = []
+        if not self.occupied:
+            choices.append((self.width, self.height))
+        else:
+            choices.append((0,0))
+        if self.right:
+            choices.append(self.right.largest_child)
+        else:
+            choices.append((0,0))
+        if self.bottom:
+            choices.append(self.bottom.largest_child)
+        else:
+            choices.append((0,0))
+        self.largest_child = max(choices, key=lambda t: t[0]*t[1])
 
-    def print_layout(self, print_stats=False):
+        if self.parent:
+            self.parent.calc_largest_child()
+
+
+    def print_layout(self, print_stats=False) -> list:
         """
         Iterative preorder tree traversal
         Returns items as a list of nested tuples:
@@ -97,8 +125,8 @@ class BinTree:
             node = stack.popleft()
             if node.occupied:
                 result.append((node.corner, (node.width, node.height)))
-                if print_stats:
-                    node.node_stats()
+            if print_stats:
+                node.node_stats()
             if node.right:
                 stack.append(node.right)
             if node.bottom:
@@ -117,6 +145,7 @@ class BinTree:
         print('Node parent: %s' % (True if self.parent else False))
         print('Node right child: %s' % (True if self.right else False))
         print('Node bottom child: %s' % (True if self.bottom else False))
+        print('Largest Child: (%s,%s)' % (self.largest_child))
         print("")
 
 
@@ -125,7 +154,13 @@ if __name__ == '__main__':
     ITEM1 = Item(width=2, height=4)
     ITEM2 = Item(width=4, height=4)
     ITEM3 = Item(width=2, height=2)
+    ITEM4 = Item(width=1, height=1)
+    ITEM5 = Item(width=1, height=1)
+    ITEM6 = Item(width=2, height=1)
     ROOT.insert(ITEM1)
     ROOT.insert(ITEM2)
     ROOT.insert(ITEM3)
+    ROOT.insert(ITEM4)
+    ROOT.insert(ITEM5)
+    ROOT.insert(ITEM6)
     ROOT.print_layout(print_stats=True)
