@@ -160,7 +160,4 @@ if __name__ == '__main__':
     ROOT.insert(ITEM1)
     ROOT.insert(ITEM2)
     ROOT.insert(ITEM3)
-    ROOT.insert(ITEM4)
-    ROOT.insert(ITEM5)
-    ROOT.insert(ITEM6)
     ROOT.print_layout(print_stats=True)
