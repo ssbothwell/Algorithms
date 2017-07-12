@@ -3,11 +3,7 @@ Solomon Bothwell
 ssbothwell@gmail.com
 
 
-A greedy algorithm for two dimensional offline bin packing.
-
-This python module implements next fit, first fit, best fit, 
-and worst fit variations. Bins are initialized with an arbitrary
-fixed size.
+A first fit greedy algorithm for two dimensional offline bin packing.
 
 Items are tuples of width, height values. A list of Items
 are submitted, sorted, and placed in bins according to the chosen
