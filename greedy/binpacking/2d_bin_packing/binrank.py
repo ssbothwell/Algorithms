@@ -12,8 +12,7 @@ unoccupied scores.
 """
 from collections import deque
 from operator import mul as product
-import avl_tree
-import bintree
+import avl_tree, bintree
 
 class BinRank:
     """

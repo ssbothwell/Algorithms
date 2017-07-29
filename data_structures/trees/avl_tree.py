@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""
-Class based AVL balanced binary search tree.
-
+""" Class based AVL balanced binary search tree.  
 A tree constists of a single AVL_Tree object and
 many Node objects.
 
@@ -11,7 +9,6 @@ deleted, the balance factors of the affected nodes are checked
 and Nodes are rotated to maintain balance in the tree. This
 ensures O(logN) insertion, deletion, and search performance.
 """
-
 import time
 import random
 from typing import Optional
@@ -378,12 +375,4 @@ if __name__ == '__main__':
     tree.insert(5)
     tree.insert(10)
     tree.insert(10)
-    #tree.insert(15)
-    #tree.insert(11)
-    #tree.insert(20)
-    #tree.insert(17)
-    #tree.insert(25)
-    #tree.insert(18)
-    #tree.insert(30)
-    #tree.insert(40)
     traverse(tree.root)

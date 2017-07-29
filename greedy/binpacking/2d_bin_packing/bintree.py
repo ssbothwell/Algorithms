@@ -2,9 +2,21 @@
 """
 2 dimensional Bin Packing Data Structure
 
-Bins are trees with each node having an x and y
-capacity and an occupied bool. Tree nodes have
-left and bottom children.
+BinTrees have right and bottom children. Items
+are inserted using recursion to find the first
+open BinTree unoccupied node large enough to fit
+them Item. That node is resized to match the Item
+and child nodes are created to fill the unused
+space to the left.
+
+Example:
+    Item := (2,4)
+    Tree := (4,8, occoupied == False)
+
+    After Insertion:
+    Tree :=     (2,4, occupied == True)
+                /                     \
+      (4,4, occupied == False)  (2,4, occupied == False)
 
 Items are namedtuples with x and y values. When
 Items are inserted into a bin tree, insert()
@@ -21,7 +33,7 @@ from collections import deque
 class CornerPoint(NamedTuple):
     """
     namedtuple representing the top left corner of each
-    BinTree object
+    BinTree object.
     """
     x: int
     y: int
@@ -29,21 +41,19 @@ class CornerPoint(NamedTuple):
 
 class Item(NamedTuple):
     """
-    namedtuple representing items placed in the bin.
+    namedtuple representing objects added to BinTree.
     """
     width: int
     height: int
-    x: int = 0
-    y: int = 0
 
 
 class BinTree:
     """
-    Tree data structure for holding the contents of a
-    2 dimension bin.
+    Each BinTree instance has two children (left and bottom)
+    and width (int), height (int), and occupied (bool) properties.
     """
     def __init__(self, width: int = 4, height: int = 8,
-                 occupied: bool = False, corner: CornerPoint = (0, 0)) -> None:
+                 occupied: bool = False, corner: CornerPoint = CornerPoint(0, 0)) -> None:
         self.corner = corner
         self.width = width
         self.height = height
@@ -74,9 +84,9 @@ class BinTree:
             self.height, self.width = item.height, item.width
             self.occupied = True
             if self.right:
-                self.right.corner = (self.width, self.corner[1])
+                self.right.corner = CornerPoint(self.width, self.corner.x)
             if self.bottom:
-                self.bottom.corner = (self.corner[0], self.height)
+                self.bottom.corner = CornerPoint(self.corner.y, self.height)
             self.calc_largest_child()
             return True
         else:
