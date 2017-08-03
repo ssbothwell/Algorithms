@@ -83,5 +83,4 @@ def dfsloop(gDict):
 
 if __name__ == '__main__':
     edgeList = createEdgeList('test_data_a.txt')
-    print calculateStrongComponents(createGraphDict(edgeList))
-
+    print(calculateStrongComponents(createGraphDict(edgeList)))
